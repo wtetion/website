@@ -36,9 +36,6 @@ html, body {
   display: flex;
 }
 
-/* =====================================================
-   CANVAS BACKGROUND (2-TONE ANIMATED + 3D SPHERE)
-===================================================== */
 #bg-canvas {
   position: fixed;
   top: 0;
@@ -50,7 +47,46 @@ html, body {
 }
 
 /* =====================================================
-   SIDEBAR (LEFT PANEL) - SLIDE-UP ANIMATION
+   TOGGLE TAB BUTTON (มุมขวาบน)
+===================================================== */
+.pc-toggle-btn {
+  position: fixed;
+  top: 24px;
+  right: 28px;
+  z-index: 200;
+  background: rgba(18, 16, 20, 0.85);
+  border: 1px solid var(--orange-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: #ffaa33;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 140, 40, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pc-toggle-btn:hover {
+  background: rgba(255, 140, 40, 0.2);
+  color: #ffffff;
+  border-color: #ff9e3b;
+  box-shadow: 0 0 15px rgba(255, 140, 40, 0.4);
+  transform: translateY(-2px);
+}
+
+.pc-toggle-btn i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+/* =====================================================
+   SIDEBAR (LEFT PANEL)
 ===================================================== */
 .sidebar {
   position: fixed;
@@ -58,29 +94,21 @@ html, body {
   top: 0;
   height: 100vh;
   width: var(--sidebar-width);
-  background: rgba(10, 10, 14, 0.75);
+  background: rgba(10, 10, 14, 0.85);
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--orange-border);
-  z-index: 10;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   padding: 20px 0 15px 0;
-
-  /* Slide-Up Animation for Sidebar */
-  animation: sidebarSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes sidebarSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.sidebar.active {
+  transform: translateX(0);
 }
 
 .sidebar-top {
@@ -91,7 +119,6 @@ html, body {
   width: 100%;
 }
 
-/* Social Buttons */
 .social-links {
   display: flex;
   flex-direction: column;
@@ -123,7 +150,6 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* Timezone Widget */
 .time-widget {
   width: calc(100% - 20px);
   background: rgba(18, 16, 20, 0.85);
@@ -172,7 +198,6 @@ html, body {
   margin-top: 3px;
 }
 
-/* Moving Dots */
 .time-dots {
   display: flex;
   justify-content: center;
@@ -196,19 +221,10 @@ html, body {
 .time-dots span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes dotPulse {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.3);
-    background-color: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 200, 80, 1);
-  }
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); background-color: #ffffff; box-shadow: 0 0 10px rgba(255, 200, 80, 1); }
 }
 
-/* กลุ่มไอคอน + ข้อความแนวตั้ง Udo in Dev */
 .dev-container {
   display: flex;
   flex-direction: column;
@@ -237,15 +253,7 @@ html, body {
   letter-spacing: 0.2em;
   user-select: none;
   text-transform: uppercase;
-
-  background: linear-gradient(
-    180deg, 
-    #ffd700 0%, 
-    #ff8c00 25%, 
-    #ffffff 50%, 
-    #ff8c00 75%, 
-    #ffd700 100%
-  );
+  background: linear-gradient(180deg, #ffd700 0%, #ff8c00 25%, #ffffff 50%, #ff8c00 75%, #ffd700 100%);
   background-size: 100% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -259,59 +267,70 @@ html, body {
 }
 
 /* =====================================================
-   MAIN WRAPPER & FRAME - SLIDE-UP ANIMATION
+   MAIN WRAPPER & OVERLAY (BLUR EFFECT)
 ===================================================== */
 .wrapper {
-  margin-left: var(--sidebar-width);
-  width: calc(100vw - var(--sidebar-width));
+  margin-left: 0;
+  width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  transition: filter 0.3s ease;
+}
+
+.wrapper.blurred {
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .spotify-frame {
   position: relative;
   z-index: 5;
-  width: 75vw;
+  width: 100%;
   max-width: 1180px;
   height: auto;
   min-height: 580px;
   border: 1px solid var(--orange-border);
   border-radius: 20px;
-  background: linear-gradient(
-    145deg,
-    rgba(18, 15, 22, 0.8),
-    rgba(8, 7, 12, 0.85)
-  );
-  box-shadow: 
-    0 0 50px rgba(255, 120, 20, 0.15),
-    inset 0 0 30px rgba(255, 140, 40, 0.08);
+  background: linear-gradient(145deg, rgba(18, 15, 22, 0.8), rgba(8, 7, 12, 0.85));
+  box-shadow: 0 0 50px rgba(255, 120, 20, 0.15), inset 0 0 30px rgba(255, 140, 40, 0.08);
   backdrop-filter: blur(12px);
   overflow: hidden;
   padding: 35px 42px 22px;
   display: flex;
   flex-direction: column;
-  
-  /* Smooth Slide-Up Animation */
   animation: frameSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes frameSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(70px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(70px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-.spotify-frame::before {
+.spotify-frame::before, .spotify-frame::after {
   content: "";
   position: absolute;
-  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 40%;
@@ -319,22 +338,9 @@ html, body {
   background: radial-gradient(circle, rgba(255,180,80,1) 0%, rgba(255,120,0,0) 80%);
   box-shadow: 0 0 15px rgba(255, 150, 50, 0.8);
 }
+.spotify-frame::before { top: 0; }
+.spotify-frame::after { bottom: 0; }
 
-.spotify-frame::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40%;
-  height: 2px;
-  background: radial-gradient(circle, rgba(255,180,80,1) 0%, rgba(255,120,0,0) 80%);
-  box-shadow: 0 0 15px rgba(255, 150, 50, 0.8);
-}
-
-/* =====================================================
-   MUSIC ICONS
-===================================================== */
 .music-icon {
   position: absolute;
   color: #d4a373;
@@ -357,9 +363,6 @@ html, body {
   50% { transform: translateY(-8px) rotate(3deg); }
 }
 
-/* =====================================================
-   HEADER & LED MARQUEE ANIMATION
-===================================================== */
 .spotify-header {
   text-align: center;
   margin-bottom: 25px;
@@ -370,7 +373,7 @@ html, body {
 .led-marquee-container {
   overflow: hidden;
   width: 100%;
-  max-width: 550px;
+  max-width: 600px;
   margin: 0 auto;
   position: relative;
   mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
@@ -392,13 +395,11 @@ html, body {
 
 .spotify-title {
   margin: 0;
-  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
   font-weight: 800;
   letter-spacing: 0.18em;
   color: #ffffff;
-  text-shadow: 
-    0 0 8px rgba(255, 180, 80, 0.9),
-    0 0 20px rgba(255, 120, 20, 0.6);
+  text-shadow: 0 0 8px rgba(255, 180, 80, 0.9), 0 0 20px rgba(255, 120, 20, 0.6);
   padding-right: 60px;
 }
 
@@ -414,9 +415,6 @@ html, body {
   letter-spacing: 0.05em;
 }
 
-/* =====================================================
-   SPOTIFY CARD & CONTAINER
-===================================================== */
 .spotify-container {
   width: 100%;
   max-width: 1180px;
@@ -447,9 +445,6 @@ html, body {
   display: block;
 }
 
-/* =====================================================
-   BUTTON & FOOTER
-===================================================== */
 .spotify-button-container {
   margin-top: 20px;
   position: relative;
@@ -503,24 +498,44 @@ html, body {
 }
 
 /* =====================================================
-   RESPONSIVE
+   MOBILE RESPONSIVE (<= 768px)
 ===================================================== */
-@media(max-width: 800px) {
-  :root {
-    --sidebar-width: 70px;
+@media (max-width: 768px) {
+  .pc-toggle-btn {
+    top: 15px;
+    right: 15px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
   }
-  .vertical-text { font-size: 1rem; }
-  .social-btn { height: 32px; font-size: 12px; }
-  .time-widget { padding: 6px 2px; }
-  .time-location { font-size: 0.5rem; }
-  .time-display { font-size: 0.9rem; }
+  .pc-toggle-btn span {
+    display: none;
+  }
+
+  .wrapper {
+    padding: 12px;
+    height: 100vh;
+    overflow-y: auto;
+  }
 
   .spotify-frame {
-    width: 88vw;
-    height: auto;
-    padding: 27px 15px 20px;
+    width: 100%;
+    min-height: auto;
+    padding: 25px 16px 18px;
+    border-radius: 16px;
   }
-  .spotify-title { font-size: 1.35rem; padding-right: 40px; }
+
+  .spotify-title {
+    font-size: 1.3rem;
+    padding-right: 30px;
+  }
+
+  .spotify-subtitle {
+    font-size: 0.72rem;
+  }
+
+  .music-icon {
+    display: none;
+  }
 }
 </style>
 </head>
@@ -529,7 +544,14 @@ html, body {
 
 <canvas id="bg-canvas"></canvas>
 
-<aside class="sidebar">
+<button class="pc-toggle-btn" id="pcToggleBtn" aria-label="Toggle Sidebar">
+  <i class="fa-solid fa-xmark" id="toggleIcon"></i>
+  <span id="toggleText">HIDE MENU</span>
+</button>
+
+<div class="sidebar-overlay active" id="sidebarOverlay"></div>
+
+<aside class="sidebar active" id="sidebar">
   <div class="sidebar-top">
     <nav class="social-links">
       <a href="#" class="social-btn" title="Discord"><i class="fa-brands fa-discord"></i></a>
@@ -561,7 +583,7 @@ html, body {
   </div>
 </aside>
 
-<div class="wrapper">
+<div class="wrapper blurred" id="mainWrapper">
   <main class="spotify-frame">
 
     <span class="music-icon note1">♪</span>
@@ -613,22 +635,44 @@ html, body {
 
 <script>
 /* =====================================================
+   SIDEBAR TOGGLE LOGIC
+===================================================== */
+const sidebar = document.getElementById('sidebar');
+const pcToggleBtn = document.getElementById('pcToggleBtn');
+const toggleIcon = document.getElementById('toggleIcon');
+const toggleText = document.getElementById('toggleText');
+const mainWrapper = document.getElementById('mainWrapper');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function updateSidebarUI(isOpen) {
+  sidebar.classList.toggle('active', isOpen);
+  sidebarOverlay.classList.toggle('active', isOpen);
+  mainWrapper.classList.toggle('blurred', isOpen);
+
+  toggleIcon.className = isOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+  toggleText.textContent = isOpen ? "HIDE MENU" : "SHOW MENU";
+}
+
+function toggleMenu() {
+  const isCurrentlyOpen = sidebar.classList.contains('active');
+  updateSidebarUI(!isCurrentlyOpen);
+}
+
+pcToggleBtn.addEventListener('click', toggleMenu);
+sidebarOverlay.addEventListener('click', () => updateSidebarUI(false));
+
+/* =====================================================
    TIMEZONE CLOCK SCRIPT
 ===================================================== */
 function updateClock() {
   const now = new Date();
-  
   const options = { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit', hour12: true };
   const timeString = new Intl.DateTimeFormat('en-US', options).format(now);
-  
   const parts = timeString.split(' ');
-  const time = parts[0];
-  const ampm = parts[1] || '';
-
-  document.getElementById('clock-time').textContent = time;
-  document.getElementById('clock-ampm').textContent = ampm;
+  
+  document.getElementById('clock-time').textContent = parts[0];
+  document.getElementById('clock-ampm').textContent = parts[1] || '';
 }
-
 setInterval(updateClock, 1000);
 updateClock();
 
@@ -638,19 +682,15 @@ updateClock();
 const canvas = document.getElementById("bg-canvas");
 const ctx = canvas.getContext("2d");
 
-let width, height, cx, cy;
-let sphereRadius;
-
+let width, height, cx, cy, sphereRadius;
 const points = [];
 const numLat = 18;
 const numLon = 24;
 
 let mouse = { x: 0, y: 0, targetX: 0, targetY: 0, isHover: false };
 let rotation = { x: 0, y: 0 };
-
 const snows = [];
 const numSnow = 70;
-
 let colorAngle = 0;
 
 function resize() {
@@ -660,11 +700,9 @@ function resize() {
   cy = height / 2;
   sphereRadius = Math.min(width, height) * 0.38;
 }
-
 window.addEventListener("resize", resize);
 resize();
 
-// Generate Sphere Points
 for (let i = 0; i <= numLat; i++) {
   let theta = (i * Math.PI) / numLat;
   let sinTheta = Math.sin(theta);
@@ -672,15 +710,16 @@ for (let i = 0; i <= numLat; i++) {
 
   for (let j = 0; j < numLon; j++) {
     let phi = (j * 2 * Math.PI) / numLon;
-    let x = sinTheta * Math.cos(phi);
-    let y = cosTheta;
-    let z = sinTheta * Math.sin(phi);
-
-    points.push({ x, y, z, lat: i, lon: j });
+    points.push({
+      x: sinTheta * Math.cos(phi),
+      y: cosTheta,
+      z: sinTheta * Math.sin(phi),
+      lat: i,
+      lon: j
+    });
   }
 }
 
-// Generate Snowflakes
 for (let i = 0; i < numSnow; i++) {
   snows.push({
     x: Math.random() * width,
@@ -692,7 +731,6 @@ for (let i = 0; i < numSnow; i++) {
   });
 }
 
-// Track Mouse Position
 window.addEventListener("mousemove", (e) => {
   mouse.targetX = (e.clientX - cx) / cx;
   mouse.targetY = (e.clientY - cy) / cy;
@@ -706,13 +744,11 @@ window.addEventListener("mouseleave", () => {
 });
 
 function render() {
-  // 1. วาด 2-Tone Gradient เคลื่อนไหว
   colorAngle += 0.005; 
   let gX = cx + Math.cos(colorAngle) * width * 0.4;
   let gY = cy + Math.sin(colorAngle) * height * 0.4;
 
   let bgGradient = ctx.createRadialGradient(gX, gY, 100, cx, cy, Math.max(width, height) * 0.8);
-  
   bgGradient.addColorStop(0, '#23150c'); 
   bgGradient.addColorStop(0.6, '#090810'); 
   bgGradient.addColorStop(1, '#030305'); 
@@ -720,7 +756,6 @@ function render() {
   ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, width, height);
 
-  // 2. คำนวณ 3D Sphere
   mouse.x += (mouse.targetX - mouse.x) * 0.05;
   mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
@@ -738,11 +773,10 @@ function render() {
   const projectedPoints = points.map(p => {
     let x1 = p.x * cosY - p.z * sinY;
     let z1 = p.x * sinY + p.z * cosY;
-    
     let y1 = p.y * cosX - z1 * sinX;
     let z2 = p.y * sinX + z1 * cosX;
-
     let scale = 400 / (400 - z2 * sphereRadius * 0.5);
+
     return {
       px: x1 * sphereRadius * scale + cx,
       py: y1 * sphereRadius * scale + cy,
@@ -752,11 +786,9 @@ function render() {
     };
   });
 
-  // วาดเส้น 3D
   ctx.lineWidth = 1;
   for (let i = 0; i < projectedPoints.length; i++) {
     let p1 = projectedPoints[i];
-
     let nextLon = projectedPoints.find(p => p.lat === p1.lat && p.lon === (p1.lon + 1) % numLon);
     if (nextLon) drawLine(p1, nextLon, glowFactor);
 
@@ -764,7 +796,6 @@ function render() {
     if (nextLat) drawLine(p1, nextLat, glowFactor);
   }
 
-  // วาดจุดโหนด 3D
   projectedPoints.forEach(p => {
     let alpha = ((p.z + 1) / 2) * 0.8 * glowFactor;
     if (alpha > 0) {
@@ -778,7 +809,6 @@ function render() {
     }
   });
 
-  // 3. วาดหิมะตก
   for (let i = 0; i < numSnow; i++) {
     let snow = snows[i];
     ctx.beginPath();
@@ -819,6 +849,7 @@ render();
 const card = document.getElementById("spotifyCard");
 
 document.addEventListener("mousemove", (event) => {
+  if (window.innerWidth <= 768) return;
   const rect = card.getBoundingClientRect();
   const mouseX = event.clientX - (rect.left + rect.width / 2);
   const mouseY = event.clientY - (rect.top + rect.height / 2);
